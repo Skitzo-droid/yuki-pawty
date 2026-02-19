@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yuki said come over</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    font-family: 'Space Mono', monospace;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* SCANLINE EFFECT */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* FLOATING CHAOS */
+  .floater {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    font-size: 2rem;
+    animation: floatAround linear infinite;
+    opacity: 0.15;
+  }
+
+  @keyframes floatAround {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.15; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+  }
+
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 100px;
+  }
+
+  /* === GLITCHY HEADER === */
+  .header { text-align: center; margin-bottom: 40px; position: relative; }
+
+  .warning-tape {
+    background: #ffe600;
+    color: #0d0d0d;
+    font-family: 'Bangers', cursive;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    padding: 8px 0;
+    margin-bottom: 24px;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 3px solid #0d0d0d;
+    border-bottom: 3px solid #0d0d0d;
+  }
+
+  .tape-inner {
+    display: inline-block;
+    animation: marquee 10s linear infinite;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .cat-img {
+    font-size: 9rem;
+    display: block;
+    margin-bottom: -8px;
+    animation: catVibe 0.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 20px rgba(255,60,110,0.6));
+  }
+
+  @keyframes catVibe {
+    from { transform: rotate(-2deg) scale(1); }
+    to { transform: rotate(2deg) scale(1.04); }
+  }
+
+  h1 {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(4rem, 15vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: 0.03em;
+    position: relative;
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+    color: #ff3c6e;
+    animation: glitchText 3s infinite;
+  }
+
+  @keyframes glitchText {
+    0%, 90%, 100% { text-shadow: none; transform: none; }
+    91% { text-shadow: -3px 0 #00ffff, 3px 0 #ff00ff; transform: skewX(-2deg); }
+    93% { text-shadow: 3px 0 #00ffff, -3px 0 #ff00ff; transform: skewX(2deg); }
+    95% { text-shadow: none; transform: none; }
+    97% { text-shadow: -2px 0 #ffe600; transform: translateX(2px); }
+  }
+
+  .h1-white { color: #fff; }
+  .h1-yellow { color: #ffe600; -webkit-text-stroke: 2px #fff; }
+
+  .subhead {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    color: #aaa;
+    margin-top: 8px;
+    display: block;
+  }
+
+  /* === MEME CARD === */
+  .meme-box {
+    background: #1a1a1a;
+    border: 3px solid #ff3c6e;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255,60,110,0.25), inset 0 0 30px rgba(255,60,110,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .meme-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,60,110,0.05) 0%, transparent 60%);
+  }
+
+  .meme-text {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(1.2rem, 4vw, 1.7rem);
+    letter-spacing: 0.05em;
+    color: #ffe600;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+
+  .meme-text .white { color: white; }
+  .meme-text .pink { color: #ff8fb1; }
+
+  .top-text {
+    font-family: 'Bangers', cursive;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: #555;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === INFO SECTION === */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .info-tile {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .info-tile:hover {
+    border-color: #ff3c6e;
+    box-shadow: 0 0 20px rgba(255,60,110,0.3);
+    transform: translateY(-3px);
+  }
+
+  .info-tile .tile-icon { font-size: 2rem; display: block; margin-bottom: 6px; }
+  .info-tile .tile-label { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.15em; color: #555; margin-bottom: 3px; }
+  .info-tile .tile-val { font-family: 'Bangers', cursive; font-size: 1.1rem; letter-spacing: 0.04em; color: #fff; line-height: 1.1; }
+  .info-tile .tile-sub { font-family: 'Caveat', cursive; font-size: 0.85rem; color: #666; margin-top: 2px; }
+
+  /* HOSTED BY tile spans full */
+  .info-tile.hosted {
+    border-color: #ff3c6e;
+    background: #1f0a0f;
+  }
+
+  /* === LOCATION === */
+  .location-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ff3c6e;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 20px 24px;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: all 0.15s;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(255,60,110,0.4);
+  }
+
+  .location-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 50px rgba(255,60,110,0.6);
+  }
+
+  .loc-icon { font-size: 2.2rem; }
+  .loc-label { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.75; }
+  .loc-val { font-family: 'Bangers', cursive; font-size: 1.4rem; letter-spacing: 0.04em; }
+  .loc-sub { font-family: 'Caveat', cursive; font-size: 0.9rem; opacity: 0.85; }
+  .loc-arrow { margin-left: auto; font-size: 1.5rem; }
+
+  /* BYOB */
+  .byob {
+    background: #ffe600;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transform: rotate(-0.8deg);
+  }
+
+  .byob .byob-icon { font-size: 2rem; }
+  .byob p { font-family: 'Caveat', cursive; font-size: 1.15rem; color: #0d0d0d; line-height: 1.3; }
+  .byob p strong { font-family: 'Bangers', cursive; font-size: 1.4rem; letter-spacing: 0.05em; }
+
+  /* === FORM === */
+  .form-header { text-align: center; margin-bottom: 24px; }
+  .form-header h2 {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    letter-spacing: 0.05em;
+    color: #fff;
+  }
+  .form-header p { font-family: 'Caveat', cursive; font-size: 1.1rem; color: #666; margin-top: -4px; }
+
+  .form-card {
+    background: #111;
+    border: 2px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 32px 28px;
+  }
+
+  .field-group { margin-bottom: 24px; }
+
+  label {
+    display: block;
+    font-family: 'Bangers', cursive;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    color: #ff8fb1;
+    margin-bottom: 8px;
+  }
+
+  .field-hint {
+    font-family: 'Caveat', cursive;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 400;
+    margin-left: 8px;
+    letter-spacing: 0;
+  }
+
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #2a2a2a;
+    border-radius: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: #fff;
+    background: #1a1a1a;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: none;
+  }
+
+  select option { background: #1a1a1a; }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #ff3c6e;
+    box-shadow: 0 0 20px rgba(255,60,110,0.2);
+  }
+
+  input::placeholder, textarea::placeholder { color: #333; }
+
+  /* DIETARY CHECKS */
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 2px solid #2a2a2a;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: #888;
+    background: #1a1a1a;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .check-item:hover { border-color: #ff3c6e; color: #fff; background: #1f0a0f; }
+
+  .check-item.checked {
+    border-color: #ff3c6e;
+    background: #ff3c6e;
+    color: white;
+    box-shadow: 0 0 16px rgba(255,60,110,0.4);
+  }
+
+  .check-item input { display: none; }
+
+  .chk-box {
+    width: 16px; height: 16px;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.6rem;
+  }
+
+  /* SUBMIT */
+  .submit-btn {
+    width: 100%;
+    padding: 20px;
+    background: #ff3c6e;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    box-shadow: 0 0 40px rgba(255,60,110,0.5);
+    transition: all 0.15s;
+    margin-top: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(255,60,110,0.5); }
+    50% { box-shadow: 0 0 60px rgba(255,60,110,0.8); }
+  }
+
+  .submit-btn:hover {
+    transform: scale(1.03);
+    background: #ff1a55;
+  }
+
+  .submit-btn:active { transform: scale(0.98); }
+
+  /* SUCCESS */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-screen.show {
+    display: block;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.1) rotate(3deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .success-screen .big { font-size: 6rem; display: block; margin-bottom: 16px; }
+  .success-screen h2 { font-family: 'Bangers', cursive; font-size: 3.5rem; color: #ff3c6e; letter-spacing: 0.05em; line-height: 1; margin-bottom: 12px; }
+  .success-screen .success-sub { font-family: 'Caveat', cursive; font-size: 1.3rem; color: #888; max-width: 360px; margin: 0 auto; line-height: 1.5; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  @media (max-width: 500px) {
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .check-grid { grid-template-columns: 1fr; }
+    .form-card { padding: 22px 16px; }
+    h1 { font-size: 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- floating paw prints -->
+<div class="floater" style="left:5%;animation-duration:12s;animation-delay:0s;font-size:1.5rem;">🐾</div>
+<div class="floater" style="left:20%;animation-duration:9s;animation-delay:3s;">😹</div>
+<div class="floater" style="left:50%;animation-duration:14s;animation-delay:1s;font-size:1.5rem;">🎲</div>
+<div class="floater" style="left:70%;animation-duration:11s;animation-delay:5s;">🍾</div>
+<div class="floater" style="left:88%;animation-duration:10s;animation-delay:2s;font-size:1.5rem;">🐾</div>
+
+<div class="page">
+
+  <!-- WARNING TAPE -->
+  <div class="warning-tape">
+    <span class="tape-inner">
+      🐾 YUKI'S PAWTY &nbsp;&nbsp;&nbsp; 🚨 ATTENDANCE MANDATORY &nbsp;&nbsp;&nbsp; 🍾 BYOB &nbsp;&nbsp;&nbsp; 🎲 BOARD GAMES &nbsp;&nbsp;&nbsp; 😾 YUKI IS WATCHING &nbsp;&nbsp;&nbsp; 🐾 YUKI'S PAWTY &nbsp;&nbsp;&nbsp; 🚨 ATTENDANCE MANDATORY &nbsp;&nbsp;&nbsp; 🍾 BYOB &nbsp;&nbsp;&nbsp; 🎲 BOARD GAMES &nbsp;&nbsp;&nbsp; 😾 YUKI IS WATCHING &nbsp;&nbsp;&nbsp;
+    </span>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="cat-img">😾</span>
+    <h1>
+      <span class="h1-white">YUKI</span><br>
+      <span class="glitch">DEMANDS</span><br>
+      <span class="h1-yellow">UR PRESENCE</span>
+    </h1>
+    <span class="subhead">this is not a request. this is a summons.</span>
+  </div>
+
+  <!-- MEME QUOTE BOX -->
+  <div class="meme-box">
+    <div class="top-text">📜 official proclamation from the supreme cat 📜</div>
+    <div class="meme-text">
+      i have claimed the living room.<br>
+      <span class="white">humans are permitted entry.</span><br>
+      bring snacks. don't pet me without consent.<br>
+      <span class="pink">board games will be tolerated.</span><br>
+      no loud laughing after i fall asleep.
+    </div>
+  </div>
+
+  <!-- INFO TILES -->
+  <div class="info-grid">
+    <div class="info-tile">
+      <span class="tile-icon">📅</span>
+      <div class="tile-label">when (not optional)</div>
+      <div class="tile-val">Fri, Feb 20</div>
+      <div class="tile-sub">tomorrow bruh</div>
+    </div>
+    <div class="info-tile">
+      <span class="tile-icon">🎲</span>
+      <div class="tile-label">entertainment</div>
+      <div class="tile-val">Board Games</div>
+      <div class="tile-sub">losers judged by Yuki</div>
+    </div>
+    <div class="info-tile hosted">
+      <span class="tile-icon">👑</span>
+      <div class="tile-label">hosted by</div>
+      <div class="tile-val">YUKI</div>
+      <div class="tile-sub">(Abhishek pays rent but Yuki makes the rules)</div>
+    </div>
+  </div>
+
+  <!-- LOCATION -->
+  <a class="location-btn" href="https://maps.google.com/?q=12.952638,77.653885" target="_blank">
+    <span class="loc-icon">📍</span>
+    <div>
+      <div class="loc-label">Yuki's kingdom (Bangalore)</div>
+      <div class="loc-val">GET DIRECTIONS</div>
+      <div class="loc-sub">tap this. don't be the person who gets lost.</div>
+    </div>
+    <span class="loc-arrow">→</span>
+  </a>
+
+  <!-- BYOB -->
+  <div class="byob">
+    <span class="byob-icon">🍾</span>
+    <p><strong>BYOB</strong> — bring your own booze.<br>Yuki is not a bartender. she is a cat. she has no thumbs.</p>
+  </div>
+
+  <!-- FORM HEADER -->
+  <div class="form-header">
+    <h2>📋 RSVP OR ELSE</h2>
+    <p>(Yuki will stare at you judgmentally either way)</p>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div id="form-content">
+
+      <div class="field-group">
+        <label>UR NAME <span style="color:#555;font-family:'Caveat',cursive;font-size:0.9rem;letter-spacing:0;font-weight:400;">*required or yuki won't know who to ignore</span></label>
+        <input type="text" id="name" placeholder="the name ur mom gave u" />
+      </div>
+
+      <div class="field-group">
+        <label>COMING OR NAH? <span style="color:#555;font-family:'Caveat',cursive;font-size:0.9rem;letter-spacing:0;font-weight:400;">*yuki is watching</span></label>
+        <select id="attendance">
+          <option value="">choose wisely...</option>
+          <option value="yes">🔥 YESSS let's go!!!</option>
+          <option value="maybe">😐 maybe... (coward answer)</option>
+          <option value="no">💀 can't come (Yuki has noted this betrayal)</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>DIETARY STUFF <span style="color:#555;font-family:'Caveat',cursive;font-size:0.9rem;letter-spacing:0;font-weight:400;">so we don't accidentally kill u</span></label>
+        <div class="check-grid">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="vegan">
+            <div class="chk-box"></div>
+            🌿 Vegan
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="vegetarian">
+            <div class="chk-box"></div>
+            🥗 Vegetarian
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="gluten-free">
+            <div class="chk-box"></div>
+            🌾 Gluten-Free
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="dairy-free">
+            <div class="chk-box"></div>
+            🥛 Dairy-Free
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="nut-allergy">
+            <div class="chk-box"></div>
+            🥜 Nut Allergy
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <input type="checkbox" value="none">
+            <div class="chk-box"></div>
+            😤 I eat everything
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>BRIBE FOR YUKI <span style="color:#555;font-family:'Caveat',cursive;font-size:0.9rem;letter-spacing:0;font-weight:400;">optional but highly recommended</span></label>
+        <textarea id="notes" rows="3" placeholder="what board game u bringing, what snack u bringing, a fun fact, anything to appease the cat..."></textarea>
+      </div>
+
+      <button class="submit-btn" onclick="submitForm()">😾 SUBMIT TO YUKI</button>
+
+    </div>
+
+    <div class="success-screen" id="success">
+      <span class="big">😸</span>
+      <h2>YUKI HAS SEEN UR RSVP.</h2>
+      <p class="success-sub">she looked at it. sniffed it. knocked it off the table. walked away. then came back and sat on it.<br><br>that means yes. see u friday.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    🐾 organized chaos courtesy of Yuki · Bangalore · Friday Feb 20<br>
+    <span style="font-size:0.8rem;">(abhishek technically organized this but let's not tell yuki that)</span>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const cb = el.querySelector('input');
+    cb.checked = !cb.checked;
+    el.querySelector('.chk-box').textContent = cb.checked ? '✓' : '';
+  }
+
+  function submitForm() {
+    const name = document.getElementById('name').value.trim();
+    const attendance = document.getElementById('attendance').value;
+    if (!name) { 
+      alert('😾 ur name. give it. NOW.'); 
+      return; 
+    }
+    if (!attendance) { 
+      alert('😾 yuki needs to know if ur coming. she has a guest list. she takes it very seriously.'); 
+      return; 
+    }
+    document.getElementById('form-content').style.display = 'none';
+    const s = document.getElementById('success');
+    s.style.display = 'block';
+    s.classList.add('show');
+  }
+</script>
+
+</body>
+</html>
